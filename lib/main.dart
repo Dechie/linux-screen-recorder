@@ -9,7 +9,7 @@ import 'recorder_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize settings model
   final settings = SettingsModel();
   await settings.ready;
@@ -21,25 +21,33 @@ void main() async {
     displayResolution['width'] ?? 1920,
     displayResolution['height'] ?? 1080,
   );
-  
+
   // Set up default save path
-  final videosDir = Directory('${Platform.environment['HOME']}/Videos/ScreenRecordings');
-  
+  final videosDir = Directory(
+    '${Platform.environment['HOME']}/Videos/ScreenRecordings',
+  );
+
   // Check if directory exists, if not, we'll handle it in the app
   final bool dirExists = await videosDir.exists();
   if (dirExists) {
     await settings.updateSavePath(videosDir.path);
   }
-  
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: settings),
-        ChangeNotifierProvider(create: (_) => RecorderController(recorderService)),
+        ChangeNotifierProvider(
+          create: (_) => RecorderController(recorderService),
+        ),
       ],
-      child: RecorderApp(
-        initialPathCheck: true, 
-        initialPath: '${Platform.environment['HOME']}/Videos/ScreenRecordings'
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: RecorderApp(
+          initialPathCheck: true,
+          initialPath:
+              '${Platform.environment['HOME']}/Videos/ScreenRecordings',
+        ),
       ),
     ),
   );
