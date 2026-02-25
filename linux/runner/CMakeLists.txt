@@ -29,10 +29,12 @@ target_link_libraries(${BINARY_NAME} PRIVATE flutter)
 target_link_libraries(${BINARY_NAME} PRIVATE PkgConfig::GTK)
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GLIB REQUIRED glib-2.0)
-pkg_check_modules(GIO REQUIRED gio-2.0 gio-unix-2.0)
-pkg_check_modules(PIPEWIRE REQUIRED libpipewire-0.3)
-pkg_check_modules(SPA REQUIRED libspa-0.2)
+find_package(Threads REQUIRED)
+pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
+pkg_check_modules(GIO REQUIRED IMPORTED_TARGET gio-2.0 gio-unix-2.0)
+pkg_check_modules(PIPEWIRE REQUIRED IMPORTED_TARGET libpipewire-0.3)
+pkg_check_modules(SPA REQUIRED IMPORTED_TARGET libspa-0.2)
+pkg_check_modules(FONTCONFIG REQUIRED IMPORTED_TARGET fontconfig)
 
 target_include_directories(${BINARY_NAME} PRIVATE
   "${CMAKE_SOURCE_DIR}"
@@ -42,22 +44,13 @@ target_include_directories(${BINARY_NAME} PRIVATE
   "${CMAKE_CURRENT_SOURCE_DIR}/screen_recorder/capture"
   "${CMAKE_CURRENT_SOURCE_DIR}/screen_recorder/encoder"
   "${CMAKE_CURRENT_SOURCE_DIR}/screen_recorder/utils"
-  ${GLIB_INCLUDE_DIRS}
-  ${GIO_INCLUDE_DIRS}
-  ${PIPEWIRE_INCLUDE_DIRS}
-  ${SPA_INCLUDE_DIRS}
-)
-
-target_compile_options(${BINARY_NAME} PRIVATE
-  ${GLIB_CFLAGS_OTHER}
-  ${GIO_CFLAGS_OTHER}
-  ${PIPEWIRE_CFLAGS_OTHER}
-  ${SPA_CFLAGS_OTHER}
 )
 
 target_link_libraries(${BINARY_NAME} PRIVATE
-  ${GLIB_LIBRARIES}
-  ${GIO_LIBRARIES}
-  ${PIPEWIRE_LIBRARIES}
-  ${SPA_LIBRARIES}
+  PkgConfig::GLIB
+  PkgConfig::GIO
+  PkgConfig::PIPEWIRE
+  PkgConfig::SPA
+  PkgConfig::FONTCONFIG
+  Threads::Threads
 )
